@@ -55,7 +55,7 @@ Features
 
 
 Project Structure
-
+```
 Expense_Tracker/
 │
 ├── expense_tracker/        # Main project settings
@@ -69,8 +69,7 @@ Expense_Tracker/
 ├── manage.py
 └── README.md
 
-
-
+```
 
  Create Virtual Environment
 
