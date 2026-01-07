@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Dashboard | Expense Tracker</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+
+<body class="min-h-screen
+             bg-gradient-to-br from-rose-200 via-orange-100 to-amber-100
+             text-rose-900">
+
+  <!-- Navbar -->
+  <nav class="flex items-center justify-between px-8 py-4
+              border-b border-rose-300/40 backdrop-blur">
+
+    <!-- Left: Logo + Navigation -->
+    <div class="flex items-center gap-6">
+      <a href="/"
+         class="text-xl font-extrabold tracking-wide
+                text-rose-700 hover:text-orange-500 transition">
+        💼 Expense Tracker
+      </a>
+
+      <a href="/"
+         class="text-sm text-rose-700 hover:text-orange-500 transition">
+        Home
+      </a>
+
+      <a href="/dashboard/#add-expense"
+         class="text-sm text-rose-700 hover:text-orange-500 transition">
+        Add Expense
+      </a>
+    </div>
+
+    <!-- Right: User + Logout -->
+    <div class="flex items-center gap-4">
+      <span class="text-sm font-medium text-rose-700">
+        {{ request.user.username }}
+      </span>
+
+      <form method="post" action="/logout/">
+        {% csrf_token %}
+        <button
+          class="px-4 py-2 rounded-xl
+                 bg-rose-500/20 text-rose-600
+                 hover:bg-rose-500 hover:text-white transition">
+          Logout
+        </button>
+      </form>
+    </div>
+
+  </nav>
+
+  <!-- Main -->
+  <main class="max-w-7xl mx-auto px-6 py-10">
+
+    <!-- Greeting -->
+    <div class="mb-10">
+      <h2 class="text-3xl font-extrabold text-rose-800">
+        Dashboard
+      </h2>
+      <p class="text-rose-700 mt-1">
+        Manage, filter, and track your expenses.
+      </p>
+    </div>
+
+    <!-- Stats Cards -->
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
+
+      <div class="bg-white/70 backdrop-blur rounded-2xl p-6
+                  border border-rose-300 shadow">
+        <p class="text-sm text-rose-600">Total Expense</p>
+        <h3 class="text-2xl font-bold mt-2 text-orange-500">
+          ₹ {{ total_expense }}
+        </h3>
+      </div>
+
+      <div class="bg-white/70 backdrop-blur rounded-2xl p-6
+                  border border-rose-300 shadow">
+        <p class="text-sm text-rose-600">Total Entries</p>
+        <h3 class="text-2xl font-bold mt-2 text-rose-800">
+          {{ expenses|length }}
+        </h3>
+      </div>
+
+      <div class="bg-white/70 backdrop-blur rounded-2xl p-6
+                  border border-rose-300 shadow">
+        <p class="text-sm text-rose-600">Status</p>
+        <h3 class="text-2xl font-bold mt-2 text-green-600">
+          Active
+        </h3>
+      </div>
+
+    </div>
+
+    <!-- Add Expense -->
+    <div id="add-expense"
+         class="bg-white/70 backdrop-blur rounded-2xl p-8
+                border border-rose-300 shadow mb-10">
+      <h3 class="text-xl font-semibold mb-6 text-rose-800">
+        ➕ Add New Expense
+      </h3>
+
+      <form method="post" class="grid grid-cols-1 md:grid-cols-5 gap-4">
+        {% csrf_token %}
+
+        <input
+          name="title"
+          placeholder="Title"
+          required
+          class="px-4 py-3 rounded-xl
+                 bg-white border border-rose-300
+                 text-rose-800 placeholder-rose-400
+                 focus:ring-2 focus:ring-orange-400 outline-none" />
+
+        <input
+          name="amount"
+          type="number"
+          step="0.01"
+          placeholder="Amount"
+          required
+          class="px-4 py-3 rounded-xl
+                 bg-white border border-rose-300
+                 text-rose-800 placeholder-rose-400
+                 focus:ring-2 focus:ring-orange-400 outline-none" />
+
+        <select
+          name="category"
+          required
+          class="px-4 py-3 rounded-xl
+                 bg-white border border-orange-300
+                 text-rose-800
+                 focus:ring-2 focus:ring-orange-400
+                 hover:border-orange-400 transition">
+          <option value="" class="text-rose-400">Select Category</option>
+          <option value="Food">🍔 Food</option>
+          <option value="Travel">✈️ Travel</option>
+          <option value="Rent">🏠 Rent</option>
+          <option value="Shopping">🛍 Shopping</option>
+          <option value="Bills">💡 Bills</option>
+          <option value="Other">📦 Other</option>
+        </select>
+
+        <input
+          name="date"
+          type="date"
+          required
+          class="px-4 py-3 rounded-xl
+                 bg-white border border-rose-300
+                 text-rose-800
+                 focus:ring-2 focus:ring-orange-400 outline-none" />
+
+        <button
+          class="px-6 py-3 rounded-xl
+                 bg-gradient-to-r from-rose-500 to-orange-400
+                 text-white font-semibold
+                 hover:brightness-110 hover:shadow-lg transition">
+          Add
+        </button>
+      </form>
+    </div>
+
+    <!-- Filter -->
+    <form method="get" class="mb-6 flex items-center gap-3">
+      <span class="px-3 py-1 text-xs font-semibold rounded-full
+                   bg-orange-200 text-orange-700">
+        Filter by Category
+      </span>
+
+      <select
+        name="category"
+        onchange="this.form.submit()"
+        class="px-4 py-2 rounded-xl
+               bg-white border border-orange-300
+               text-rose-800
+               focus:ring-2 focus:ring-orange-400
+               hover:border-orange-400 transition">
+        {% for cat in categories %}
+          <option value="{{ cat }}"
+            {% if selected_category == cat %}selected{% endif %}>
+            {{ cat }}
+          </option>
+        {% endfor %}
+      </select>
+    </form>
+
+    <!-- Expense List -->
+    <div class="bg-white/70 backdrop-blur rounded-2xl p-8
+                border border-rose-300 shadow">
+      <h3 class="text-xl font-semibold mb-6 text-rose-800">
+        📊 Expense History
+      </h3>
+
+      {% if expenses %}
+      <div class="overflow-x-auto">
+        <table class="w-full text-left">
+          <thead class="text-rose-600 text-sm border-b border-rose-300">
+            <tr>
+              <th class="pb-3">Title</th>
+              <th class="pb-3">Category</th>
+              <th class="pb-3">Amount</th>
+              <th class="pb-3">Date</th>
+              <th class="pb-3">Actions</th>
+            </tr>
+          </thead>
+
+          <tbody class="divide-y divide-rose-200">
+            {% for e in expenses %}
+            <tr class="hover:bg-orange-100/60 transition">
+              <td class="py-4">{{ e.title }}</td>
+              <td class="py-4 text-rose-700">{{ e.category }}</td>
+              <td class="py-4 text-orange-500 font-semibold">
+                ₹ {{ e.amount }}
+              </td>
+              <td class="py-4 text-rose-700">{{ e.date }}</td>
+              <td class="py-4 space-x-3">
+                <a href="{% url 'update_expense' e.id %}"
+                   class="text-blue-500 hover:text-blue-600">
+                  Edit
+                </a>
+                <a href="{% url 'delete_expense' e.id %}"
+                   class="text-red-500 hover:text-red-600">
+                  Delete
+                </a>
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+      {% else %}
+        <p class="text-rose-600 text-center py-10">
+          No expenses added yet.
+        </p>
+      {% endif %}
+    </div>
+
+  </main>
+
+</body>
+</html>

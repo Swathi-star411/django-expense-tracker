@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Home | Expense Tracker</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+
+<body class="min-h-screen bg-gradient-to-br
+             from-rose-200 via-orange-100 to-amber-100
+             text-rose-900">
+
+  <!-- Navbar -->
+  <nav class="flex items-center justify-between px-8 py-4
+              border-b border-rose-300/40
+              backdrop-blur">
+
+    <div class="flex items-center gap-6">
+      <a href="/"
+         class="text-xl font-extrabold tracking-wide
+                text-rose-700 hover:text-orange-500 transition">
+        💼 Expense Tracker
+      </a>
+
+      <a href="/"
+         class="text-sm text-orange-500 font-semibold">
+        Home
+      </a>
+
+      <a href="/dashboard/"
+         class="text-sm text-rose-700 hover:text-orange-600 transition">
+        Dashboard
+      </a>
+    </div>
+
+    <div class="flex items-center gap-4">
+      <span class="text-sm font-medium text-rose-700">
+        {{ request.user.username }}
+      </span>
+
+      <form method="post" action="/logout/">
+        {% csrf_token %}
+        <button
+          class="px-4 py-2 rounded-xl
+                 bg-rose-500/20 text-rose-600
+                 hover:bg-rose-500 hover:text-white
+                 transition">
+          Logout
+        </button>
+      </form>
+    </div>
+
+  </nav>
+
+  <!-- Hero Section -->
+  <main class="max-w-6xl mx-auto px-6 py-24 text-center">
+
+    <h1 class="text-5xl font-extrabold mb-6 text-rose-800">
+      Welcome,
+      <span class="text-orange-500">
+        {{ request.user.username }}
+      </span> 👋
+    </h1>
+
+    <p class="text-lg text-rose-700 max-w-3xl mx-auto mb-10">
+      Expense Tracker helps you monitor, categorize, and control your daily spending
+      with a simple, secure, and elegant dashboard — all in one place.
+    </p>
+
+    <div class="flex justify-center gap-6">
+      <a href="/dashboard/"
+         class="px-8 py-4 rounded-2xl
+                bg-gradient-to-r from-rose-500 to-orange-400
+                text-white font-semibold
+                hover:brightness-110 hover:shadow-lg transition">
+        Go to Dashboard
+      </a>
+
+      <a href="/dashboard/#add-expense"
+         class="px-8 py-4 rounded-2xl
+                bg-white/70 border border-rose-300
+                text-rose-800
+                hover:bg-white transition">
+        Add Expense
+      </a>
+    </div>
+
+  </main>
+
+</body>
+</html>
